@@ -1,9 +1,11 @@
-# Spree Drop Ship
+# Solidus Marketplace
 
 [![Build Status](https://travis-ci.org/spree-contrib/spree_drop_ship.png)](https://travis-ci.org/spree-contrib/spree_drop_ship)
 [![Code Climate](https://codeclimate.com/github/spree-contrib/spree_drop_ship.png)](https://codeclimate.com/github/spree-contrib/spree_drop_ship)
 [![Coverage Status](https://coveralls.io/repos/spree-contrib/spree_drop_ship/badge.png?branch=master)](https://coveralls.io/r/spree-contrib/spree_drop_ship)
 [![Dependency Status](https://gemnasium.com/spree-contrib/spree_drop_ship.png?travis)](https://gemnasium.com/spree-contrib/spree_drop_ship)
+
+Solidus Marketplace is a Solidus is an extension to add support for suppliers and drop shipping to Solidus.  It is a fork from the Spree Drop Ship extension.
 
 What is drop shipping?
 
@@ -42,7 +44,7 @@ Here's how to install spree_drop_ship into your existing spree site AFTER you've
 
 Add the following to your Gemfile:
 
-    gem 'spree_drop_ship', github: 'spree-contrib/spree_drop_ship'
+    gem 'solidus_marketplace', github: 'solidus/solidus_marketplace'
 
 Make your bundle happy:
 

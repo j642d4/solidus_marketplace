@@ -1,4 +1,4 @@
-module SpreeDropShip
+module SolidusMarketplace
   module Generators
     class InstallGenerator < Rails::Generators::Base
       class_option :auto_run_migrations, :type => :boolean, :default => false
@@ -14,7 +14,7 @@ module SpreeDropShip
       end
 
       def add_migrations
-        run 'bundle exec rake railties:install:migrations FROM=spree_drop_ship'
+        run 'bundle exec rake railties:install:migrations FROM=solidus_marketplace'
       end
 
       def run_migrations

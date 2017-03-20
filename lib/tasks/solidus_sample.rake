@@ -1,4 +1,4 @@
-namespace :spree_sample do
+namespace :solidus_sample do
   desc "Create sample drop ship orders"
   task :drop_ship_orders => :environment do
     if Spree::Order.count == 0
