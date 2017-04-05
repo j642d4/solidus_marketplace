@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'solidus_backend'
   s.add_dependency 'solidus_core'
 
+  s.add_development_dependency 'byebug'
   s.add_development_dependency 'capybara',           '~> 2.2'
   s.add_development_dependency 'coffee-rails'
   s.add_development_dependency 'coveralls'
