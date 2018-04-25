@@ -15,9 +15,9 @@ module SolidusMarketplace
     #   app.config.spree.stock_splitters << Spree::Stock::Splitter::DropShip
     # end
 
-    initializer "solidus_marketplace.preferences", before: :load_config_initializers  do |app|
-      SolidusMarketplace::Config = Spree::DropShipConfiguration.new
-    end
+    # initializer "solidus_marketplace.preferences", before: :load_config_initializers  do |app|
+    #   SolidusMarketplace::Config = Spree::DropShipConfiguration.new
+    # end
 
     initializer "solidus_marketplace.menu", before: :load_config_initializers  do |app|
       Spree::Backend::Config.configure do |config|
