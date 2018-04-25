@@ -1,46 +1,26 @@
 # Solidus Marketplace
 
-[![Build Status](https://travis-ci.org/spree-contrib/spree_drop_ship.png)](https://travis-ci.org/spree-contrib/spree_drop_ship)
-[![Code Climate](https://codeclimate.com/github/spree-contrib/spree_drop_ship.png)](https://codeclimate.com/github/spree-contrib/spree_drop_ship)
-[![Coverage Status](https://coveralls.io/repos/spree-contrib/spree_drop_ship/badge.png?branch=master)](https://coveralls.io/r/spree-contrib/spree_drop_ship)
-[![Dependency Status](https://gemnasium.com/spree-contrib/spree_drop_ship.png?travis)](https://gemnasium.com/spree-contrib/spree_drop_ship)
+# NOTE: This gem is currently a work-in-progress.
+Contributors are welcome to help us get this gem to a viable MVP.
+We suggest installing [ZenHub](http://zenhub.com) in order to view/manage open issues.
+This will give you a new tab in Github called "Boards", which provides a Kanban-style view of the project's issues.
 
 Solidus Marketplace is a Solidus is an extension to add support for suppliers and drop shipping to Solidus.  It is a fork from the Spree Drop Ship extension.
 
 What is drop shipping?
 
-"Drop shipping is a supply chain management technique in which the retailer does not keep goods in stock, but instead transfers customer orders
-and shipment details to either the manufacturer or a wholesaler, who then ships the goods directly to the customer." - [wikipedia](http://en.wikipedia.org/wiki/Drop_shipping)
+This is marketplace implementation for solidus.
 
-So the main goal with spree_drop_ship is to link products to suppliers and forward orders to the appropriate suppliers.
-
-Once an order is placed for a product that belongs to a supplier a shipment is created for the product's supplier.
-This shipment is then sent to the supplier (via Email by default). The supplier then follows a link to the shipment
-within the email where they are prompted to confirm the shipment.
-
-Spree Drop Ship used with [Spree Marketplace](https://github.com/jdutil/spree_marketplace) allows handling payments to your suppliers via ACH direct deposits.  
-This is still currently a work in progress, and any input is welcome.
-.
-
-Upgrading
----------
-
-**Warning: Upgrading to Spree 2.2.x & 2.3.x when using this extension is not backwards compatible.
-            I have removed the notion of drop ship orders which payments & commission were previously tracked to.
-            Now suppliers simply manage their shipments, and payments & commission are now linked to a payable object i.e. shipment in this case.
-            This means the previous method of determining a suppliers commission is no longer valid, and you will need to migrate your data accordingly.**
-
-I'm sorry for the inconvenience this may cause, but I've determined for this extension to meet it's most potential I needed to drastically alter the approach
-it was taking.  I'm still undergoing several more radical changes for Spree 2.3.x that involve moving product management from this extension into the spree_marketplace
-extension.  The goal from the beginning of this extension has been for it to be a very light weight and extensible drop shipping solution.  Much of this extension
-has been made obsolete by split shipping, and line item adjustments within Spree Core itself.  Now I feel I can really streamline this extension to take advantage
-of the recent Spree Core changes, and also move the product management into the marketplace extension as that is really more of what product management is inteded for.
-The typical drop shipping scenario would simply be a supplier being able to update their shipments they need to fulfill and nothing more.
+Basic functionality:
+* Links products to one or more suppliers
+* Once an order is placed:
+  * A shipment is created for the product's supplier
+  * The shipment is then sent to the store owner for fulfillment and to the supplier for visibility (via Email by default).
+  * The store owner fulfills orders. The supplier can view their shipments (read-only for now).
 
 Installation
 ------------
-
-Here's how to install spree_drop_ship into your existing spree site AFTER you've installed Spree:
+Here's how to install solidus_marketplace into your existing spree site AFTER you've installed Spree:
 
 Add the following to your Gemfile:
 
@@ -52,7 +32,12 @@ Make your bundle happy:
 
 Now run the generator:
 
-    rails g spree_drop_ship:install
+    rails g solidus_marketplace:install
+
+(Optional) Run the generator for solidus_gateway to enable the use of Stripe or other payment providers
+included with that extension:
+
+    rails g solidus_gateway:install
 
 Then migrate your database if you did not run during installation generator:
 
@@ -70,23 +55,31 @@ Sample Data
 If you'd like to generate sample data, use the included rake tasks:
 
 ```shell
+rake db:seed                         # Loads seed data into the store
 rake spree_sample:load               # Loads sample data into the store
 rake spree_sample:suppliers          # Create sample suppliers and randomly link to products
-rake spree_sample:drop_ship_orders   # Create sample drop ship orders
+rake spree_sample:marketplace_orders # Create sample marketplace orders
 ```
+
+This will include a new role (supplier_admin) and 2 new users in addition to the default 'admin@example.com' user provided by solidus.
+
+Those users have the following email/password/roles
+
+* marketmaker@example.com / test123 / admin
+* supplier_admin@example.com / test123 / supplier_admin
 
 Demo
 ----
 
-You can easily use the spec/dummy app as a demo of spree_drop_ship. Just `cd` to where you develop and run:
+You can easily use the spec/dummy app as a demo of solidus_marketplace. Just `cd` to where you develop and run:
 
 ```shell
-git clone git://github.com/spree-contrib/spree_drop_ship.git
-cd spree_drop_ship
+git clone git://github.com/boomerdigital/solidus_marketplace.git
+cd solidus_marketplace
 bundle install
 bundle exec rake test_app
 cd spec/dummy
-rake db:migrate db:seed spree_sample:load spree_sample:suppliers spree_sample:drop_ship_orders
+rake db:migrate db:seed spree_sample:load spree_sample:suppliers spree_sample:marketplace_orders
 rails s
 ```
 
@@ -96,6 +89,8 @@ Testing
 Be sure to bundle your dependencies and then create a dummy test app for the specs to run against.
 
 ```shell
+brew install geckodriver
+
 bundle
 bundle exec rake test_app
 bundle exec rspec spec
@@ -104,11 +99,7 @@ bundle exec rspec spec
 Todo
 ----
 
-- Stock Items should automatically be set to backorderable false if the variant doesnt belong to the stock locations supplier.
-- Must allow suppliers to edit their stock location addresses & require it.
-- Return Authorization UI
-- Better documentation
-- related products should only allow suppliers own products to be related
+* See open issues here: [open issues](https://github.com/boomerdigital/solidus_marketplace/issues)
 
 Contributing
 ------------
@@ -118,19 +109,17 @@ In the spirit of [free software](http://www.fsf.org/licensing/essays/free-sw.htm
 Here are some ways *you* can contribute:
 
 * by using prerelease versions
-* by reporting [bugs](https://github.com/spree-contrib/spree_drop_ship/issues)
+* by reporting [bugs](https://github.com/boomerdigital/solidus_marketplace/issues)
 * by suggesting new features
-* by [translating to a new language](https://github.com/spree-contrib/spree_drop_ship/tree/master/config/locales)
+* by [translating to a new language](https://github.com/boomerdigital/solidus_marketplace/tree/master/config/locales)
 * by writing or editing documentation
 * by writing specifications
 * by writing code (*no patch is too small*: fix typos, add comments, clean up inconsistent whitespace)
 * by refactoring code
-* by resolving [issues](https://github.com/spree-contrib/spree_drop_ship/issues)
+* by resolving [issues](https://github.com/boomerdigital/solidus_marketplace/issues)
 * by reviewing patches
 
 Donating
 --------
 
-Bitcoin donations may be sent to: 1L6akT6Aus9r6Ashw1wDtLg7D8zJCVVZac
-
-Copyright (c) 2012-2014 Jeff Dutil, released under the [New BSD License](https://github.com/spree-contrib/spree_drop_ship/tree/master/LICENSE).
+Copyright (c) 2016-2017 Boomer Digital, released under the [New BSD License](https://github.com/boomerdigital/solidus_marketplace/tree/master/LICENSE).

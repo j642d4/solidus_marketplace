@@ -1,28 +1,35 @@
 FactoryGirl.define do
 
-  factory :order_for_drop_ship, parent: :order do
+  factory :order_from_supplier, parent: :order do
     bill_address
     ship_address
 
-    ignore do
+    transient do
       line_items_count 5
     end
 
     after(:create) do |order, evaluator|
       supplier = create(:supplier)
+      product = create(:product)
+      product.add_supplier! supplier
+      # product.stock_items.where(variant_id: product.master.id).first.adjust_count_on_hand(10)
+
+      product_2 = create(:product)
+      product_2.add_supplier! create(:supplier)
+
       create_list(:line_item, evaluator.line_items_count,
         order: order,
-        variant: create(:variant, product: create(:product, supplier: create(:supplier)))
+        variant: product_2.master
       )
       order.line_items.reload
 
       create(:shipment, order: order, stock_location: supplier.stock_locations.first)
       order.shipments.reload
 
-      order.update!
+      order.recalculate
     end
 
-    factory :completed_order_for_drop_ship_with_totals do
+    factory :completed_order_from_supplier_with_totals do
       state 'complete'
 
       after(:create) do |order|
@@ -30,7 +37,7 @@ FactoryGirl.define do
         order.update_column(:completed_at, Time.now)
       end
 
-      factory :order_ready_for_drop_ship do
+      factory :order_from_supplier_ready_to_ship do
         payment_state 'paid'
         shipment_state 'ready'
 
@@ -43,7 +50,7 @@ FactoryGirl.define do
           order.reload
         end
 
-        factory :shipped_order_for_drop_ship do
+        factory :shipped_order_from_supplier do
           after(:create) do |order|
             order.shipments.each do |shipment|
               shipment.inventory_units.each { |u| u.update_column('state', 'shipped') }
@@ -61,6 +68,8 @@ FactoryGirl.define do
     email { FFaker::Internet.email }
     url "http://example.com"
     address
+    commission_flat_rate 0.0
+    commission_percentage 10.0
     # Creating a stock location with a factory instead of letting the model handle it
     # so that we can run tests with backorderable defaulting to true.
     before :create do |supplier|
@@ -77,8 +86,22 @@ FactoryGirl.define do
     supplier
   end
 
+  factory :supplier_admin_role, parent: :role do
+    name "supplier_admin"
+  end
+
+  factory :supplier_admin, parent: :user do
+    supplier
+
+    after :create do |user|
+      user.spree_roles << create(:supplier_admin_role)
+    end
+  end
+
   factory :variant_with_supplier, parent: :variant do
-    product { create(:product, supplier: create(:supplier)) }
+    after :create do |variant|
+      variant.product.add_supplier! create(:supplier)
+    end
   end
 
 end

@@ -17,11 +17,11 @@ namespace :solidus_sample do
 
     puts "Linking existing line items to suppliers"
     Spree::LineItem.all.each do |li|
-      print "*" if li.product.add_supplier! @suppliers.shuffle.first and li.save
+      print "*" if li.product.add_supplier! @suppliers.shuffle.first.id and li.save
     end
     puts
 
-    puts "Creating drop ship orders for existing orders"
+    puts "Creating marketplace orders for existing orders"
     Spree::Order.all.each do |order|
       print "*" if order.finalize!
     end

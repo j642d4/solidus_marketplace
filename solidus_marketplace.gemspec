@@ -1,9 +1,14 @@
  # encoding: UTF-8
+
+lib = File.expand_path('../lib/', __FILE__)
+$:.unshift lib unless $:.include?(lib)
+require 'solidus_marketplace/version'
+
 Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.name        = 'solidus_marketplace'
-  s.version     = '0.0.1'
-  s.summary     = 'Spree Drop Shipping Extension'
+  s.version     = SolidusMarketplace::VERSION
+  s.summary     = 'Solidus Marketplace Extension'
   s.description = 'Adds marketplace functionality to Solidus stores.'
   s.required_ruby_version = '>= 2.0.0'
 
@@ -20,6 +25,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'solidus_api'
   s.add_dependency 'solidus_backend'
   s.add_dependency 'solidus_core'
+  s.add_dependency 'solidus_gateway'
 
   s.add_development_dependency 'byebug'
   s.add_development_dependency 'capybara',           '~> 2.2'
@@ -29,7 +35,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'factory_girl_rails', '~> 4.2'
   s.add_development_dependency 'ffaker'
   s.add_development_dependency 'launchy'
-  s.add_development_dependency 'rspec-rails',        '~> 2.99'
+  s.add_development_dependency 'rspec-rails'
   s.add_development_dependency 'sass-rails', '~> 5.0.0.beta1'
   s.add_development_dependency 'selenium-webdriver'
   s.add_development_dependency 'shoulda-matchers'
@@ -37,4 +43,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'sqlite3'
   s.add_development_dependency 'log_buddy'
   s.add_development_dependency 'awesome_print'
+  s.add_development_dependency 'pry'
 end

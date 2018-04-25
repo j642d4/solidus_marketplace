@@ -1,4 +1,6 @@
 Spree::Shipment.class_eval do
+  # TODO here to fix cancan issue thinking its just Order
+  belongs_to :order, class_name: 'Spree::Order', touch: true, inverse_of: :shipments
 
   has_many :payments, as: :payable
 
@@ -16,13 +18,14 @@ Spree::Shipment.class_eval do
     self.item_cost + self.final_price
   end
 
+  # TODO move commission to spree_marketplace?
   def supplier_commission_total
     ((self.final_price_with_items * self.supplier.commission_percentage / 100) + self.supplier.commission_flat_rate)
   end
 
   private
 
-  durably_decorate :after_ship, mode: 'soft', sha: 'e8eca7f8a50ad871f5753faae938d4d01c01593d' do
+  durably_decorate :after_ship, mode: 'soft', sha: '5401c76850108aba74c87a87ff634379bdc844ce' do
     original_after_ship
 
     if supplier.present?
